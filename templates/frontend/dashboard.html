@@ -1,0 +1,850 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+{% block title %}Dashboard - AutoGitHubPush{% endblock title %}
+{% block description %}Dashboard to manage your GitHub repositories and automate code pushes{% endblock description %}
+{% block author %}AutoGitHubPush{% endblock author %}
+{% block css %}
+<style>
+  .code-editor {
+    background-color: #2d2d2d;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .code-editor-header {
+    background-color: #1e1e1e;
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .push-history-item:hover {
+    background-color: rgba(26, 31, 44, 0.6);
+  }
+</style>
+{% endblock css %}
+
+{% block main %}
+<main class="flex-grow-1 py-5">
+  <div class="container-fluid">
+    <div class="row gy-4">
+      <!-- Sidebar -->
+      <div class="col-lg-3">
+        <div class="futuristic-card" style="top: 85px;">
+          <h2 class="fs-4 fw-bold mb-4">Repository Details</h2>
+          <div class="glassmorphism p-4 mb-4 rounded-3 shadow">
+            <!-- Profile Header -->
+            <div class="d-flex align-items-center gap-3 mb-3">
+              {% if avatar_url %}
+              <img src="{{ avatar_url }}" alt="Profile Picture" class="rounded-circle" width="60" height="60">
+              {% else %}
+              <img src="https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg?semt=ais_hybrid&w=740"
+                alt="Default Avatar" class="rounded-circle" width="60" height="60">
+              {% endif %}
+              <div>
+                <h3 class="m-0 fw-bold text-white">{{ name }}</h3>
+                <a href="{{ profile_url }}" target="_blank" class="text-decoration-none text-primary">
+                  <i class="fa-brands fa-github"></i> @{{ username|default:"Username" }}
+                </a>
+              </div>
+            </div>
+
+            <div
+              class="glassmorphism p-3 mb-4 d-flex flex-column align-items-center justify-content-center text-center">
+              <div class="mb-2 d-grid gap-2">
+                <span class="fw-semibold">Selected Repository:</span>
+                <span class="text-primary">{{ selected_repo|default:"None Selected" }}</span>
+              </div>
+              <div>
+
+                <a href="{% url 'select_repository' %}" class="btn btn-sm btn-outline-primary">
+                  <i class="fa-solid fa-folder-open text-primary me-2"></i> Change Repository
+                </a>
+              </div>
+            </div>
+
+
+            <!-- Profile Details -->
+            <div class="glassmorphism shadow-sm rounded-4 p-4 text-white">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-code-branch text-warning fs-4 me-3"></i>
+                <div>
+                  <h6 class="mb-0 fw-semibold">Total Repositories</h6>
+                  <p class="mb-0 fs-5">{{ total_repos|default:"0" }}</p>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center">
+                <i class="fa-solid fa-map-marker-alt text-danger fs-4 me-3"></i>
+                <div>
+                  <h6 class="mb-0 fw-semibold">Location</h6>
+                  <p class="mb-0 fs-6 text-white">{{ location|default:"Unknown" }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="glassmorphism p-4 mb-4 glow-effect">
+            <h5 class="text-white fw-bold mb-3">Auto Push Workflow</h5>
+            <div class="d-flex flex-column gap-4">
+              <!-- Repository Setup Check -->
+              <div class="d-flex align-items-center gap-3">
+                <input type="checkbox" id="setup-repo-check" class="form-check-input" {% if selected_repo %}checked
+                  disabled{% endif %}>
+                <label for="setup-repo-check" class="form-check-label text-white">
+                  <a href="{% url 'select_repository' %}" class="text-decoration-none text-primary">
+                    Setup GitHub Repository
+                  </a>
+                </label>
+              </div>
+
+              <!-- Auto Push Settings Check -->
+              <div class="d-flex align-items-center gap-3">
+                <input type="checkbox" id="setup-auto-push-check" class="form-check-input" {% if push_settings %}checked
+                  disabled{% endif %}>
+                <label for="setup-auto-push-check" class="form-check-label text-white">
+                  <a href="{% url 'auto_settings' %}" class="text-decoration-none text-primary">
+                    Setup Auto Push Settings
+                  </a>
+                </label>
+              </div>
+
+              <!-- Auto Push Toggle -->
+              <div class="d-flex align-items-center justify-content-between">
+                <h4 class="small mt-2">Set Automated Push</h4>
+                <!-- Custom Toggle Switch -->
+                <label class="switch">
+                  <input type="checkbox" id="auto-push-toggle" onchange="toggleAutoPush(this)" disabled>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <!-- Warning Message -->
+              <div id="setup-warning" class="text-danger mt-2" style="display: none;">
+                Please complete the setup to enable auto push.
+              </div>
+
+              <!-- Auto-Push Details -->
+              <div id="auto-push-details" class="mt-3" style="display: none;">
+                <div class="text-primary fs-5 fw-medium">{{ next_push|default:"Tomorrow at 09:00" }}</div>
+                <p class="small mt-1 mb-0">Based on your current settings</p>
+              </div>
+
+              <!-- Custom Toggle Button Style -->
+              <style>
+                .switch {
+                  position: relative;
+                  display: inline-block;
+                  width: 60px;
+                  height: 30px;
+                }
+
+                .switch input {
+                  opacity: 0;
+                  width: 0;
+                  height: 0;
+                }
+
+                .slider {
+                  position: absolute;
+                  cursor: pointer;
+                  top: 0;
+                  left: 0;
+                  right: 0;
+                  bottom: 0;
+                  background-color: #ccc;
+                  transition: 0.4s;
+                  border-radius: 30px;
+                }
+
+                .slider:before {
+                  position: absolute;
+                  content: "";
+                  height: 22px;
+                  width: 22px;
+                  left: 4px;
+                  bottom: 4px;
+                  background-color: white;
+                  transition: 0.4s;
+                  border-radius: 50%;
+                }
+
+                input:checked+.slider {
+                  background-color: #4caf50;
+                }
+
+                input:checked+.slider:before {
+                  transform: translateX(28px);
+                }
+
+                .slider.round {
+                  border-radius: 30px;
+                }
+
+                .slider.round:before {
+                  border-radius: 50%;
+                }
+
+                h3 {
+                  color: #fff;
+                  font-size: 1.1rem;
+                  margin: 0;
+                }
+
+                .text-primary {
+                  color: #4caf50;
+                }
+
+                .small {
+                  color: #aaa;
+                  font-size: 0.9rem;
+                }
+
+                .text-danger {
+                  color: #ff6b6b;
+                }
+              </style>
+            </div>
+          </div>
+
+          <a href="{% url 'auto_settings' %}" class="btn futuristic-button-secondary w-100">
+            <i class="fa-solid fa-gear me-2"></i>
+            Update Settings
+          </a>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-6">
+        <div class="futuristic-card">
+          <ul class="nav nav-tabs mb-4" id="dashboardTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="generate-tab" data-bs-toggle="tab" data-bs-target="#generate-tab-pane"
+                type="button" role="tab" aria-controls="generate-tab-pane" aria-selected="true">
+                <i class="fa-solid fa-code me-2"></i>
+                Generate Code
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-tab-pane"
+                type="button" role="tab" aria-controls="history-tab-pane" aria-selected="false">
+                <i class="fa-solid fa-history me-2"></i>
+                Push History
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="dashboardTabContent">
+            <!-- Generate Code Tab -->
+            <div class="tab-pane fade show active" id="generate-tab-pane" role="tabpanel" aria-labelledby="generate-tab"
+              tabindex="0">
+              <div class="mb-4">
+                <h3 class="fs-4 fw-bold mb-3">Code Generation</h3>
+                <div class="glassmorphism p-4 rounded-4">
+                  <div class="mb-3">
+                    <label for="code-prompt" class="form-label text-light fw-bold">Enter Your Code Prompt</label>
+                    <div class="futuristic-input-container position-relative">
+                      <style>
+                        .form-control::placeholder {
+                          color: rgb(56, 67, 67);
+                          opacity: 1;
+                        }
+                      </style>
+                      <textarea id="code-prompt"
+                        class="form-control text-light border-secondary rounded-3 shadow-sm p-3" rows="4"
+                        placeholder="Describe the code you want to generate (e.g., 'Create a utility function to format dates in python')"
+                        style="background-color: #171B27;"></textarea>
+                      <div class="placeholder-icon position-absolute top-50 end-0 translate-middle-y me-3">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="text-end">
+                    <button id="generate-code-btn" class="btn futuristic-button shadow">
+                      <i class="fa-solid fa-rocket me-2"></i> Generate Code
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="generated-code-section" class="mb-3 d-none">
+                <h3 class="fs-4 fw-bold mb-3">Generated Code</h3>
+                <div class="glassmorphism p-0 p-3">
+                  <div class="code-editor">
+                    <pre><code id="code-output" class="language-javascript"></code></pre>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-end gap-2 mt-3">
+                  <button id="push-code-btn" class="btn futuristic-button">
+                    Push to GitHub
+                    <i class="fa-brands fa-github ms-2"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Push History Tab -->
+            <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
+              <style>
+                /* Scrollable list style */
+                .scrollable-list {
+                  max-height: 400px;
+                  /* Set a fixed height */
+                  overflow-y: auto;
+                  /* Enable vertical scrolling */
+                  padding-right: 10px;
+                  /* Space for scrollbar */
+                }
+
+                /* Custom scrollbar styling */
+                .scrollable-list::-webkit-scrollbar {
+                  width: 8px;
+                }
+
+                .scrollable-list::-webkit-scrollbar-thumb {
+                  background-color: #3b82f6;
+                  border-radius: 4px;
+                }
+
+                .scrollable-list::-webkit-scrollbar-track {
+                  background-color: #1a1a1a;
+                }
+              </style>
+              <h3 class="fs-4 fw-bold mb-4">Recent Push History</h3>
+              <div class="glassmorphism p-0">
+                <div id="push-history-list" class="list-group list-group-flush bg-transparent scrollable-list">
+                  <!-- Dynamic push history items will be loaded here -->
+                </div>
+              </div>
+              <div class="text-center mt-4">
+                <button id="load-more-btn" class="btn futuristic-button-secondary" onclick="loadMoreHistory()">Load More
+                  History</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-3">
+        <div class="futuristic-card" style="top: 85px;">
+          <h2 class="fs-4 fw-bold mb-4">Automatic Push Settings</h2>
+          <div class="glassmorphism p-3 mb-3">
+            <div class="d-flex flex-column gap-2">
+              <!-- Frequency -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-regular fa-calendar text-primary"></i>
+                  <span>Frequency</span>
+                </div>
+                <span class="text-primary text-capitalize">{{ push_settings.frequency|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Codes Per Day -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-hashtag text-primary"></i>
+                  <span>Codes Per Day</span>
+                </div>
+                <span class="text-primary">{{ push_settings.codes_per_day|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Push Time -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-regular fa-clock text-primary"></i>
+                  <span>Push Time</span>
+                </div>
+                <span class="text-primary">{{ push_settings.push_time|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Auto Push Duration -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-hourglass-half text-primary"></i>
+                  <span>Auto Push Duration (Days)</span>
+                </div>
+                <span class="text-primary">{{ push_settings.auto_push_duration|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Code Type -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-code text-primary"></i>
+                  <span>Code Type</span>
+                </div>
+                <span class="text-primary text-capitalize">{{ push_settings.code_type|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Code Complexity -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-bolt text-primary"></i>
+                  <span>Complexity</span>
+                </div>
+                <span class="text-primary">{{ push_settings.code_complexity|default:"Not Set" }}%</span>
+              </div>
+      
+              <!-- Code Style -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-brush text-primary"></i>
+                  <span>Code Style</span>
+                </div>
+                <span class="text-primary text-capitalize">{{ push_settings.code_style|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Preferred Language -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-language text-primary"></i>
+                  <span>Preferred Language</span>
+                </div>
+                <span class="text-primary text-capitalize">{{ push_settings.preferred_language|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Preferred Framework -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-layer-group text-primary"></i>
+                  <span>Preferred Framework</span>
+                </div>
+                <span class="text-primary text-capitalize">{{ push_settings.preferred_framework|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Comment Style -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-comments text-primary"></i>
+                  <span>Comment Style</span>
+                </div>
+                <span class="text-primary text-capitalize">{{ push_settings.comment_style|default:"Not Set" }}</span>
+              </div>
+      
+              <!-- Updated At -->
+              <div class="d-flex align-items-center justify-content-between small">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-calendar-check text-primary"></i>
+                  <span>Last Updated</span>
+                </div>
+                <span class="text-primary">{{ push_settings.updated_at|date:"d M Y, H:i" }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="auto-push-progress" class="glassmorphism p-4 mb-4 rounded-4 shadow text-white">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h5 class="fw-bold mb-0">Auto Push Progress</h5>
+            <span class="text-lightsmall"><span id="pushed-count">0</span>/<span id="total-count">0</span> pushed</span>
+          </div>
+          <div class="progress" style="height: 22px; background-color: rgba(255, 255, 255, 0.1);">
+            <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+              role="progressbar" style="width: 0%;">
+            </div>
+          </div>
+          <div class="mt-2 small text-end">
+            <i class="fa-solid fa-clock me-1"></i>
+            <span class="text-light-emphasis"><span id="remaining-count">0</span> pushes remaining today</span>
+          </div>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock main %}
+
+{% block script %}
+<!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Prism.js for syntax highlighting -->
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+
+<script>
+  // Code Generation Button Handler
+  document.getElementById('generate-code-btn').addEventListener('click', async function () {
+    const codePrompt = document.getElementById('code-prompt').value.trim();
+    if (!codePrompt) {
+      showToast('Please enter a prompt for code generation', false);
+      return;
+    }
+
+    this.disabled = true;
+    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Generating...';
+
+    try {
+      // Send prompt to backend API that calls GPT-4o
+      const response = await fetch('{% url "generate_code" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ prompt: codePrompt }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        // Display generated code
+        document.getElementById('code-output').textContent = data.generated_code;
+        document.getElementById('generated-code-section').classList.remove('d-none');
+
+        // Highlight code with Prism.js
+        Prism.highlightAll();
+
+        // Show success toast
+        showToast('Code generated successfully!', true);
+      } else {
+        showToast(`Failed to generate code: ${data.error || 'Unknown error'}`, false);
+      }
+    } catch (err) {
+      showToast(`Error generating code: ${err.message}`, false);
+    } finally {
+      this.disabled = false;
+      this.innerHTML = 'Generate Code <i class="fa-solid fa-bolt ms-2"></i>';
+    }
+  });
+
+  // Push to GitHub Button Handler
+  document.getElementById('push-code-btn').addEventListener('click', async function () {
+    const codeOutput = document.getElementById('code-output').textContent.trim();
+    const codePrompt = document.getElementById('code-prompt').value.trim();
+
+    if (!codeOutput) {
+      showToast('No generated code available to push.', false);
+      return;
+    }
+
+    this.disabled = true;
+    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Pushing...';
+
+    try {
+      // Send the generated code and prompt to the backend to save and push
+      const response = await fetch('{% url "push_code_to_github" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({
+          prompt: codePrompt,
+          generated_code: codeOutput
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        showToast('Code pushed to GitHub successfully!', true);
+      } else {
+        showToast(`GitHub Push Failed: ${data.error || 'Unknown error'}`, false);
+      }
+    } catch (err) {
+      showToast(`Error during push: ${err.message}`, false);
+    } finally {
+      this.disabled = false;
+      this.innerHTML = 'Push to GitHub <i class="fa-brands fa-github ms-2"></i>';
+    }
+  });
+
+  // Toast helper function for success and error
+  function showToast(message, isSuccess) {
+    const toastEl = document.getElementById('generate-toast');
+    const toastText = toastEl.querySelector('.toast-body');
+    toastText.textContent = message;
+    toastEl.className = `toast align-items-center text-white border-0 ${isSuccess ? 'bg-success' : 'bg-danger'}`;
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+  }
+
+  // CSRF token helper for Django
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+
+<script>
+  let currentPage = 1;
+  let isLoading = false;
+  let hasMore = true;
+  let lastPushTime = null;
+
+  async function loadMoreHistory(reset = false) {
+    if (isLoading || (!hasMore && !reset)) return;
+
+    try {
+      isLoading = true;
+      const loadMoreBtn = document.getElementById('load-more-btn');
+
+      if (!reset && loadMoreBtn) {
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.innerHTML = 'Loading...';
+      }
+
+      const response = await fetch(`/load_push_history/?page=${reset ? 1 : currentPage}`);
+      const data = await response.json();
+
+      if (!data.success) {
+        showToast(`Error: ${data.error}`, false);
+        return;
+      }
+
+      const pushHistoryList = document.getElementById('push-history-list');
+
+      // If we're auto-refreshing and there's nothing new, return early
+      const latestTime = data.push_history?.[0]?.pushed_at;
+      if (reset) {
+        if (!latestTime || latestTime === lastPushTime) return;
+        lastPushTime = latestTime;
+        pushHistoryList.innerHTML = '';  // clear history
+        currentPage = 1;
+        hasMore = true;
+      }
+
+      // Render all received push history items
+      data.push_history.forEach(push => {
+        const pushItem = document.createElement('div');
+        pushItem.classList.add(
+          'list-group-item',
+          'bg-transparent',
+          'border-bottom',
+          'border-secondary',
+          'push-history-item',
+          'px-4',
+          'py-3',
+          'text-white'
+        );
+        pushItem.innerHTML = `
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h4 class="fs-6 mb-1">Title: ${push.title}</h4>
+              <div class="d-flex gap-3 small">
+                <span><i class="fa-solid fa-code me-1"></i> ${push.files_count || 'N/A'} files</span>
+                <span><i class="fa-solid fa-code-branch me-1"></i> ${push.branch || 'N/A'}</span>
+                <span><i class="fa-solid fa-database me-1"></i> ${push.repo_name || 'N/A'}</span>
+              </div>
+            </div>
+            <div class="text-end">
+              <div class="badge ${push.status === 'pushed' ? 'bg-success' : push.status === 'failed' ? 'bg-danger' : 'bg-warning text-dark'}">
+                ${push.status}
+              </div>
+              <div class="small mt-1">${push.pushed_at}</div>
+            </div>
+          </div>
+        `;
+        pushHistoryList.appendChild(pushItem);
+      });
+
+      // Handle pagination and button visibility
+      if (!reset && data.has_next) {
+        currentPage++;
+        if (loadMoreBtn) {
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.innerHTML = 'Load More History';
+        }
+      } else if (!data.has_next && loadMoreBtn) {
+        hasMore = false;
+        loadMoreBtn.style.display = 'none';
+      }
+    } catch (err) {
+      showToast(`Error loading more history: ${err.message}`, false);
+    } finally {
+      isLoading = false;
+    }
+  }
+
+  // Load more on scroll
+  document.getElementById('push-history-list').addEventListener('scroll', function () {
+    if (this.scrollTop + this.clientHeight >= this.scrollHeight - 50) {
+      loadMoreHistory();
+    }
+  });
+
+  // First load on page load
+  window.addEventListener('load', () => {
+    loadMoreHistory();
+  });
+
+  // Auto-refresh every 15 seconds (only the latest page)
+  setInterval(() => {
+    loadMoreHistory(true); // true = reset mode, refresh only top
+  }, 15000);
+</script>
+
+
+
+<!-- Toggle Button Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const autoPushToggle = document.getElementById('auto-push-toggle');
+    const autoPushDetails = document.getElementById('auto-push-details');
+    const setupRepoCheck = document.getElementById('setup-repo-check');
+    const setupAutoPushCheck = document.getElementById('setup-auto-push-check');
+    const setupWarning = document.getElementById('setup-warning');
+
+    // Function to show toast notifications
+    function showToast(message, isSuccess) {
+      const toastEl = document.getElementById('generate-toast');
+      const toastText = toastEl.querySelector('.toast-body');
+      toastText.textContent = message;
+      toastEl.className = `toast align-items-center text-white border-0 ${isSuccess ? 'bg-success' : 'bg-danger'}`;
+      const toast = new bootstrap.Toast(toastEl);
+      toast.show();
+    }
+
+    // Function to disable toggle and show warning
+    function disableToggle(message) {
+      autoPushToggle.disabled = true;
+      autoPushToggle.checked = false;
+      autoPushDetails.style.display = 'none';
+      setupWarning.style.display = 'block';
+      setupWarning.textContent = message;
+    }
+
+    // Function to enable toggle and hide warning
+    function enableToggle() {
+      autoPushToggle.disabled = false;
+      setupWarning.style.display = 'none';
+    }
+
+    // Ensure checkboxes are always disabled
+    function disableCheckbox(checkbox) {
+      checkbox.disabled = true;
+    }
+
+    // Check prerequisites: repository and auto-push settings
+    function checkPrerequisites() {
+      disableCheckbox(setupRepoCheck);
+      disableCheckbox(setupAutoPushCheck);
+
+      if (!setupRepoCheck.checked) {
+        disableToggle("Please complete GitHub repository setup first.");
+        return false;
+      }
+
+      if (!setupAutoPushCheck.checked) {
+        disableToggle("Please configure your auto-push settings.");
+        return false;
+      }
+
+      enableToggle();
+      return true;
+    }
+
+    // Initialize toggle based on database state via API call
+    async function initializeToggle() {
+      try {
+        // Check prerequisites first
+        if (!checkPrerequisites()) return;
+
+        const response = await fetch("{% url 'get_auto_push_state' %}");
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.success) {
+          autoPushToggle.checked = data.is_enabled;
+          autoPushDetails.style.display = data.is_enabled ? 'block' : 'none';
+        }
+      } catch (err) {
+        console.error("Error fetching auto-push state:", err);
+        showToast("Unable to load auto-push state. Please try again later.", false);
+      }
+    }
+
+    // Call to initialize the toggle state on page load
+    initializeToggle();
+
+    // Toggle function to update the database
+    window.toggleAutoPush = async function (toggle) {
+      const state = toggle.checked;
+      const toggleText = state ? 'Enabled' : 'Disabled';
+
+      try {
+        // Check prerequisites before updating state
+        if (!checkPrerequisites()) {
+          toggle.checked = false;
+          return;
+        }
+
+        const response = await fetch("{% url 'update_auto_push_state' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+          },
+          body: JSON.stringify({ is_enabled: state })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (data.success) {
+          autoPushDetails.style.display = state ? 'block' : 'none';
+          showToast(`Auto Push ${toggleText} successfully!`, true);
+        } else {
+          throw new Error(data.error || "Unknown error");
+        }
+      } catch (err) {
+        console.error("Error updating auto-push state:", err);
+        showToast("Failed to update auto-push state.", false);
+        toggle.checked = !state;
+        autoPushDetails.style.display = !state ? 'block' : 'none';
+      }
+    };
+  });
+</script>
+
+<!--  Fetch Push Progress Script -->
+<script>
+  function fetchPushProgress() {
+    fetch('{% url "get_push_progress" %}')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const pushed = data.pushed;
+          const total = data.total;
+          const remaining = data.remaining;
+          const percent = total === 0 ? 0 : Math.round((pushed / total) * 100);
+
+          document.getElementById('pushed-count').textContent = pushed;
+          document.getElementById('total-count').textContent = total;
+          document.getElementById('remaining-count').textContent = remaining;
+          document.getElementById('progress-bar').style.width = percent + '%';
+        }
+      });
+  }
+
+  fetchPushProgress();  // Initial fetch
+  setInterval(fetchPushProgress, 10000); // Repeat every 10 seconds
+</script>
+
+<!-- Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;">
+  <div id="generate-toast" class="toast align-items-center text-white border-0 bg-success" role="alert"
+    aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+        aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+{% endblock script %}

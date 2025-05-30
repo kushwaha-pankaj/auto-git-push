@@ -1,0 +1,26 @@
+
+{% extends "frontend/base.html" %}
+{% load static %}
+{% block title %}AutoGitPush - Automate Your GitHub Commits{% endblock title %}
+{% block description %}Automatically generate and push code to your GitHub repositories on a schedule{% endblock description %}
+{% block author %}AutoGitPush{% endblock author %}
+{% block og_image %}https://lovable.dev/opengraph-image-p98pqg.png{% endblock og_image %}
+{% load static %}
+
+{% block main %}
+        {% include "frontend/includes/hero.html" %}
+
+        <!-- GitHub Graph Section -->
+        {% include "frontend/includes/githubgraph.html" %}
+
+        <!-- Features Section -->
+        {% include "frontend/includes/feature.html" %}
+
+        <!-- Benefits Section -->
+        {% include "frontend/includes/benefits.html" %}
+
+        <!-- CTA Section -->
+        {% include "frontend/includes/cta.html" %}
+
+{% endblock main %}
+   

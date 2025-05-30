@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoGitPush - Automate Your GitHub Commits</title>
+    <meta name="description" content="Automatically generate and push code to your GitHub repositories on a schedule" />
+    <meta name="author" content="AutoGitPush" />
+
+    <meta property="og:title" content="AutoGitPush - Automate Your GitHub Commits" />
+    <meta property="og:description" content="Automatically generate and push code to your GitHub repositories on a schedule" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@autogitpush" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+
+  <body>
+    <div id="app" class="d-flex flex-column min-vh-100">
+      <!-- Header -->
+      <header class="sticky-top header-glass">
+        <div class="container">
+          <nav class="navbar py-3">
+            <div class="d-flex align-items-center">
+              <div class="logo-circle me-2"></div>
+              <a class="navbar-brand fw-semibold" href="index.html">AutoGitHubPush</a>
+            </div>
+            
+            <ul class="navbar-nav flex-row ms-auto">
+              <li class="nav-item me-4">
+                <a class="nav-link d-flex align-items-center" href="dashboard.html">
+                  <i class="fa-solid fa-table-columns me-2"></i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="settings.html">
+                  <i class="fa-solid fa-gear me-2"></i>
+                  <span>Settings</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-grow-1">
+        <!-- Hero Section -->
+        <section class="py-5">
+          <div class="container">
+            <div class="row align-items-center gy-4">
+              <div class="col-lg-6 animation-fade-in">
+                <h1 class="display-4 fw-bold mb-4">
+                  <span class="glow-text">Automate</span> Your Daily<br>GitHub Commits
+                </h1>
+                <p class="lead text-light-gray mb-4">
+                  Set up once and let our AI generate and push code to your repositories on autopilot. 
+                  Stay consistent with your contribution graph.
+                </p>
+                <div class="d-flex gap-3 mt-4">
+                  <a href="login.html" class="btn futuristic-button">
+                    Get Started
+                    <i class="fa-brands fa-github ms-2"></i>
+                  </a>
+                  <a href="#how-it-works" class="btn futuristic-button-secondary">
+                    Learn More
+                  </a>
+                </div>
+              </div>
+              <div class="col-lg-6 animation-fade-in">
+                <div class="hero-animation">
+                  <div class="code-window">
+                    <div class="code-header">
+                      <div class="code-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                      <div class="code-title">auto-commit.js</div>
+                    </div>
+                    <div class="code-body">
+                      <pre><code>// AutoGitHubPush
+async function generateCommit() {
+  const repo = await github.getRepo();
+  const code = await ai.generateCode({
+    type: 'feature',
+    complexity: 'medium',
+    language: 'javascript'
+  });
+  
+  const commit = await github.commit({
+    repo: repo.name,
+    code: code,
+    message: 'Add new feature'
+  });
+  
+  return commit.status;
+}</code></pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- GitHub Graph Section -->
+        <section class="py-5 bg-dark-gradient">
+          <div class="container">
+            <h2 class="text-center glow-text mb-4 display-5 fw-bold">Keep Your GitHub Green</h2>
+            <div class="github-graph-container mb-5">
+              <div class="glassmorphism p-4 rounded-3">
+                <h3 class="fs-4 fw-semibold mb-4">Your GitHub Contribution Graph</h3>
+                <div class="overflow-auto py-2">
+                  <div class="github-graph">
+                    <div class="d-flex justify-content-between text-muted small mb-2">
+                      <span>Jan</span>
+                      <span>Feb</span>
+                      <span>Mar</span>
+                      <span>Apr</span>
+                      <span>May</span>
+                      <span>Jun</span>
+                      <span>Jul</span>
+                      <span>Aug</span>
+                      <span>Sep</span>
+                      <span>Oct</span>
+                      <span>Nov</span>
+                      <span>Dec</span>
+                    </div>
+                    <div id="contribution-grid" class="contribution-grid">
+                      <!-- JavaScript will generate contribution cells here -->
+                    </div>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-end gap-2 mt-3 text-muted small">
+                  <span>Less</span>
+                  <div class="contribution-level level-0"></div>
+                  <div class="contribution-level level-1"></div>
+                  <div class="contribution-level level-2"></div>
+                  <div class="contribution-level level-3"></div>
+                  <div class="contribution-level level-4"></div>
+                  <span>More</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center mb-5">
+              <h3 class="fs-3 fw-semibold mb-4">How AutoGitHubPush Works</h3>
+              <div class="row g-4">
+                <div class="col-md-4">
+                  <div class="glassmorphism p-4 h-100 hover-lift">
+                    <div class="text-primary mb-3 d-flex align-items-center gap-2">
+                      <i class="fa-regular fa-calendar"></i>
+                      <h4 class="fw-semibold m-0">Set Your Schedule</h4>
+                    </div>
+                    <p class="text-light-gray">
+                      Choose how often you want commits to be pushed to your repositories. 
+                      Daily, weekly, or on specific days - you're in control.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="glassmorphism p-4 h-100 hover-lift">
+                    <div class="text-primary mb-3 d-flex align-items-center gap-2">
+                      <i class="fa-solid fa-code"></i>
+                      <h4 class="fw-semibold m-0">Choose Code Type</h4>
+                    </div>
+                    <p class="text-light-gray">
+                      Select what kind of code you want to generate - practice problems, 
+                      LeetCode challenges, or feature implementations.
+                    </p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="glassmorphism p-4 h-100 hover-lift">
+                    <div class="text-primary mb-3 d-flex align-items-center gap-2">
+                      <i class="fa-solid fa-bolt"></i>
+                      <h4 class="fw-semibold m-0">Automatic Pushes</h4>
+                    </div>
+                    <p class="text-light-gray">
+                      Our AI generates meaningful code and commits it to your repositories 
+                      automatically, keeping your GitHub activity consistent.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="how-it-works" class="py-5">
+          <div class="container">
+            <h2 class="text-center glow-text mb-5 display-5 fw-bold">How It Works</h2>
+            <div class="row g-4">
+              <div class="col-md-6 col-lg-3">
+                <div class="futuristic-card h-100 text-center">
+                  <div class="rounded-circle bg-dark p-3 d-inline-flex mb-4 border border-primary-light">
+                    <i class="fa-brands fa-github fs-1 text-primary"></i>
+                  </div>
+                  <h3 class="fs-4 fw-semibold mb-2">Connect GitHub</h3>
+                  <p class="text-muted">Securely link your GitHub account with just a few clicks</p>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="futuristic-card h-100 text-center">
+                  <div class="rounded-circle bg-dark p-3 d-inline-flex mb-4 border border-primary-light">
+                    <i class="fa-solid fa-code fs-1 text-primary"></i>
+                  </div>
+                  <h3 class="fs-4 fw-semibold mb-2">Define Your Code</h3>
+                  <p class="text-muted">Create templates or use AI to generate your ideal commits</p>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="futuristic-card h-100 text-center">
+                  <div class="rounded-circle bg-dark p-3 d-inline-flex mb-4 border border-primary-light">
+                    <i class="fa-regular fa-calendar fs-1 text-primary"></i>
+                  </div>
+                  <h3 class="fs-4 fw-semibold mb-2">Set Schedule</h3>
+                  <p class="text-muted">Configure when and how often you want code to be pushed</p>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-3">
+                <div class="futuristic-card h-100 text-center">
+                  <div class="rounded-circle bg-dark p-3 d-inline-flex mb-4 border border-primary-light">
+                    <i class="fa-solid fa-bolt fs-1 text-primary"></i>
+                  </div>
+                  <h3 class="fs-4 fw-semibold mb-2">Automatic Pushes</h3>
+                  <p class="text-muted">Sit back while we handle your daily contributions</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Benefits Section -->
+        <section class="py-5 position-relative">
+          <div class="radial-gradient-bg"></div>
+          <div class="container">
+            <div class="text-center mb-5 mx-auto" style="max-width: 700px;">
+              <h2 class="glow-text mb-4 display-5 fw-bold">Stay Active on GitHub Without the Hassle</h2>
+              <p class="fs-5 text-light-gray">
+                Maintain a consistent contribution graph and impress potential employers 
+                or collaborators with your activity
+              </p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+              <div class="col-md-4">
+                <div class="glassmorphism p-4 h-100 hover-lift">
+                  <h3 class="fs-4 fw-semibold mb-3 text-primary">Time Saving</h3>
+                  <p class="text-light-gray">Focus on real projects while keeping your activity high</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="glassmorphism p-4 h-100 hover-lift">
+                  <h3 class="fs-4 fw-semibold mb-3 text-primary">Customizable</h3>
+                  <p class="text-light-gray">Control what kind of code gets pushed to your repositories</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="glassmorphism p-4 h-100 hover-lift">
+                  <h3 class="fs-4 fw-semibold mb-3 text-primary">Secure</h3>
+                  <p class="text-light-gray">Your repository details are encrypted and protected</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-5 position-relative">
+          <div class="futuristic-gradient-bg"></div>
+          <div class="container">
+            <div class="mx-auto glassmorphism p-5 glow-effect text-center" style="max-width: 800px;">
+              <h2 class="display-5 fw-bold mb-4">Ready to Automate Your GitHub Activity?</h2>
+              <p class="fs-5 mb-4 text-light-gray">Join thousands of developers who use AutoGitHubPush to maintain their online presence</p>
+              <a href="login.html" class="btn futuristic-button btn-lg px-5 py-3">
+                Get Started Now 
+                <i class="fa-brands fa-github ms-2"></i>
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer-glass py-4 mt-auto">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="d-flex align-items-center">
+                <div class="logo-circle me-2"></div>
+                <span class="small">AutoGitHubPush © <span id="current-year"></span></span>
+              </div>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <div class="text-muted small">
+                Automatically generate and push code to your GitHub repositories
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+      // Set current year in footer
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      
+      // Generate GitHub contribution graph
+      document.addEventListener('DOMContentLoaded', function() {
+        const contributionGrid = document.getElementById('contribution-grid');
+        if (!contributionGrid) return;
+        
+        // Pattern for "I AM PANKAJ" using 1s to represent green dots
+        const messagePattern = [
+          // I
+          [0,1,1,1,0,0,0,0,0,0,0,0,0],
+          [0,0,1,0,0,0,0,0,0,0,0,0,0],
+          [0,0,1,0,0,0,0,0,0,0,0,0,0],
+          [0,0,1,0,0,0,0,0,0,0,0,0,0],
+          [0,1,1,1,0,0,0,0,0,0,0,0,0],
+          // A
+          [0,0,0,0,0,1,1,1,0,0,0,0,0],
+          [0,0,0,0,1,0,0,0,1,0,0,0,0],
+          [0,0,0,0,1,1,1,1,1,0,0,0,0],
+          [0,0,0,0,1,0,0,0,1,0,0,0,0],
+          [0,0,0,0,1,0,0,0,1,0,0,0,0],
+          // M
+          [0,0,0,0,0,0,0,0,0,0,1,0,1],
+          [0,0,0,0,0,0,0,0,0,1,0,1,0],
+          [0,0,0,0,0,0,0,0,0,1,0,1,0],
+          [0,0,0,0,0,0,0,0,0,1,0,1,0],
+          [0,0,0,0,0,0,0,0,0,1,0,1,0],
+          // P
+          [0,0,0,0,0,0,0,0,0,0,0,0,0],
+          [1,1,1,0,0,0,0,0,0,0,0,0,0],
+          [1,0,0,1,0,0,0,0,0,0,0,0,0],
+          [1,1,1,0,0,0,0,0,0,0,0,0,0],
+          [1,0,0,0,0,0,0,0,0,0,0,0,0],
+          // A
+          [0,0,0,0,1,1,1,0,0,0,0,0,0],
+          [0,0,0,1,0,0,0,1,0,0,0,0,0],
+          [0,0,0,1,1,1,1,1,0,0,0,0,0],
+          [0,0,0,1,0,0,0,1,0,0,0,0,0],
+          [0,0,0,1,0,0,0,1,0,0,0,0,0],
+          // N
+          [0,0,0,0,0,0,0,0,1,0,0,1,0],
+          [0,0,0,0,0,0,0,0,1,1,0,1,0],
+          [0,0,0,0,0,0,0,0,1,0,1,1,0],
+          [0,0,0,0,0,0,0,0,1,0,0,1,0],
+          [0,0,0,0,0,0,0,0,1,0,0,1,0],
+          // K
+          [0,0,1,0,0,0,1,0,0,0,0,0,0],
+          [0,0,1,0,1,0,0,0,0,0,0,0,0],
+          [0,0,1,1,0,0,0,0,0,0,0,0,0],
+          [0,0,1,0,1,0,0,0,0,0,0,0,0],
+          [0,0,1,0,0,1,0,0,0,0,0,0,0],
+          // A
+          [0,0,0,0,0,0,1,1,1,0,0,0,0],
+          [0,0,0,0,0,1,0,0,0,1,0,0,0],
+          [0,0,0,0,0,1,1,1,1,1,0,0,0],
+          [0,0,0,0,0,1,0,0,0,1,0,0,0],
+          [0,0,0,0,0,1,0,0,0,1,0,0,0],
+          // J
+          [0,0,0,0,0,0,0,0,0,0,1,1,1],
+          [0,0,0,0,0,0,0,0,0,0,0,1,0],
+          [0,0,0,0,0,0,0,0,0,0,0,1,0],
+          [0,0,0,0,0,0,0,0,0,1,0,1,0],
+          [0,0,0,0,0,0,0,0,0,0,1,0,0]
+        ];
+        
+        // Create grid for each day of the year
+        // 7 days per week, 53 weeks per year
+        for (let week = 0; week < 53; week++) {
+          const weekColumn = document.createElement('div');
+          weekColumn.className = 'contribution-week';
+          
+          for (let day = 0; day < 7; day++) {
+            let contributionLevel = 0;
+            
+            // Apply pattern if within pattern bounds
+            if (week < messagePattern[0].length && day < messagePattern.length) {
+              contributionLevel = messagePattern[day][week] ? 
+                Math.floor(Math.random() * 2) + 3 : // Levels 3-4 (bright green) for message
+                Math.floor(Math.random() * 2);      // Levels 0-1 (none or light) for background
+            } else {
+              // Random contributions for rest of the graph
+              contributionLevel = Math.random() < 0.3 ? 
+                Math.floor(Math.random() * 3) + 1 : // Levels 1-3
+                0;                                  // Level 0 - no contributions
+            }
+            
+            const dayCell = document.createElement('div');
+            dayCell.className = `contribution-day level-${contributionLevel}`;
+            dayCell.setAttribute('title', `${contributionLevel} contributions on Day ${week * 7 + day + 1}`);
+            weekColumn.appendChild(dayCell);
+          }
+          
+          contributionGrid.appendChild(weekColumn);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,248 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+{% block title %}Connect Repository{% endblock title %}
+{% block style %}
+<style>
+  .repo-item {
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+  }
+  .repo-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  .futuristic-button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .info-text {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    color: #adb5bd;
+  }
+</style>
+{% endblock style %}
+
+{% block main %}
+<main class="flex-grow-1 py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10 col-xl-8">
+        <div class="futuristic-card p-4 p-md-5 animation-fade-in">
+          <div class="mb-4">
+            <h1 class="fs-2 fw-bold glow-text">Connect Repository</h1>
+            <p class="text-light-gray">Select the GitHub repository you want to automate</p>
+            <p class="info-text">
+              Please choose a <strong>newly created repository</strong> to enable auto push features.
+              Repositories older than 1 day cannot be used for automation.
+            </p>
+          </div>
+
+          <div class="position-relative mb-4">
+            <i class="fa-solid fa-search position-absolute start-0 top-50 translate-middle-y ms-3"></i>
+            <input
+              type="text"
+              id="repo-search"
+              class="form-control bg-dark border-secondary text-light ps-5"
+              placeholder="Search repositories..."
+              aria-label="Search repositories"
+            />
+          </div>
+
+          <div
+            class="repositories-container mb-4"
+            style="max-height: 400px; overflow-y: auto;"
+            role="list"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            <!-- Repository items will be dynamically added here -->
+          </div>
+
+          <div class="d-flex justify-content-end">
+            <button id="continue-btn" class="btn futuristic-button" disabled aria-disabled="true">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Toast container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+  <div id="toast-message" class="toast align-items-center text-white border-0 bg-success" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="toast-text">
+        <!-- Message goes here -->
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+{% endblock main %}
+{% block script %}
+<script>
+  // Set current year in footer
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+
+  const repos = {{ repos|safe }};
+  const repoContainer = document.querySelector('.repositories-container');
+  const continueBtn = document.getElementById('continue-btn');
+  const repoSearchInput = document.getElementById('repo-search');
+
+  // Check if the repository is new (created within the last 7 days)
+  function isRepoNew(repo) {
+    if (!repo.created_at) return false;
+
+    const createdDate = new Date(repo.created_at);
+    const now = new Date();
+    const diffMs = now - createdDate;
+    const diffDays = diffMs / (1000 * 3600 * 24);
+
+    return diffDays < 7;
+  }
+
+  function renderRepos(filter = '') {
+    repoContainer.innerHTML = '';
+    const filtered = repos.filter(repo =>
+      repo.name.toLowerCase().includes(filter.toLowerCase())
+    );
+
+    filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    if (filtered.length === 0) {
+      repoContainer.innerHTML = '<p class="text-center">No repositories found.</p>';
+      continueBtn.disabled = true;
+      continueBtn.setAttribute('aria-disabled', 'true');
+      return;
+    }
+
+    filtered.forEach((repo, index) => {
+      const repoItem = document.createElement('div');
+      repoItem.className = 'repo-item d-flex align-items-center justify-content-between p-3 mb-2 rounded bg-dark text-light';
+      repoItem.style.userSelect = 'none';
+
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'selected_repo';
+      radio.value = repo.full_name;
+      radio.id = `repo_${index}`;
+      radio.style.marginRight = '12px';
+      radio.className = 'form-check-input';
+
+      const badgeClass = repo.private ? 'danger' : 'success';
+      const badgeText = repo.private ? 'Private' : 'Public';
+
+      const isSelectable = isRepoNew(repo);
+
+      const createdDate = new Date(repo.created_at);
+      const formattedDate = createdDate.toLocaleDateString() + ' ' + createdDate.toLocaleTimeString();
+
+      const label = document.createElement('label');
+      label.htmlFor = radio.id;
+      label.className = 'flex-grow-1 cursor-pointer';
+
+      label.innerHTML = `
+        <strong>${repo.name}</strong>
+        <span class="badge bg-${badgeClass} ms-2" style="font-size: 0.65rem; vertical-align: middle;">
+          ${badgeText}
+        </span>
+        ${isSelectable
+          ? '<span class="badge bg-info ms-2" style="font-size: 0.65rem; vertical-align: middle;">New Repo (less than 7 days old)</span>'
+          : '<span class="badge bg-warning text-dark ms-2" style="font-size: 0.65rem; vertical-align: middle;">Older than 7 days</span>'
+        }
+        ${repo.size === 0 ? '<span class="badge bg-secondary ms-2" style="font-size: 0.65rem; vertical-align: middle;">Empty</span>' : ''}
+        <br />
+        <small>${repo.description ? repo.description : 'No description'}</small><br />
+        <small>Created at: ${formattedDate}</small>
+      `;
+
+      if (!isSelectable) {
+        radio.disabled = true;
+        repoItem.style.opacity = '0.6';
+        repoItem.style.cursor = 'not-allowed';
+      }
+
+      repoItem.appendChild(radio);
+      repoItem.appendChild(label);
+
+      repoItem.addEventListener('click', () => {
+        if (!isSelectable) return;
+
+        radio.checked = true;
+        continueBtn.disabled = false;
+        continueBtn.removeAttribute('aria-disabled');
+      });
+
+      repoContainer.appendChild(repoItem);
+    });
+
+    continueBtn.disabled = true;
+    continueBtn.setAttribute('aria-disabled', 'true');
+  }
+
+  function showToast(message, isSuccess = true) {
+    const toastEl = document.getElementById('toast-message');
+    const toastText = document.getElementById('toast-text');
+    toastText.textContent = message;
+
+    toastEl.className = `toast align-items-center text-white border-0 ${isSuccess ? 'bg-success' : 'bg-danger'}`;
+
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+  }
+
+  renderRepos();
+
+  repoSearchInput.addEventListener('input', (e) => {
+    renderRepos(e.target.value);
+  });
+
+  continueBtn.addEventListener('click', () => {
+    const selectedRadio = document.querySelector('input[name="selected_repo"]:checked');
+    if (!selectedRadio) {
+      showToast('Please select a repository', false);
+      return;
+    }
+    const selectedRepo = selectedRadio.value;
+
+    fetch('{% url "save_selected_repo" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      body: JSON.stringify({ repo_full_name: selectedRepo }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showToast('Repository saved successfully!');
+          setTimeout(() => {
+            window.location.href = data.redirect_url || "/dashboard/";
+          }, 1500);
+        } else {
+          showToast('Failed to save repository: ' + (data.error || 'Unknown error'), false);
+        }
+      })
+      .catch(error => {
+        showToast('An error occurred: ' + error, false);
+      });
+  });
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+{% endblock script %}

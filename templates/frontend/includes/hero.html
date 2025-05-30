@@ -1,0 +1,57 @@
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center gy-4">
+            <div class="col-lg-6 animation-fade-in">
+                <h1 class="display-4 fw-bold mb-4">
+                    <span class="glow-text">Automate</span> Your Daily<br>GitHub Commits
+                </h1>
+                <p class="lead text-light-gray mb-4">
+                    Set up once and let our AI generate and push code to your repositories on autopilot.
+                    Stay consistent with your contribution graph.
+                </p>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="{% url 'account_login' %}" class="btn futuristic-button">
+                        Get Started
+                        <i class="fa-brands fa-github ms-2"></i>
+                    </a>
+                    <a href="#how-it-works" class="btn futuristic-button-secondary">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 animation-fade-in">
+                <div class="hero-animation">
+                    <div class="code-window">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                            <div class="code-title">auto-commit.js</div>
+                        </div>
+                        <div class="code-body">
+                            <pre><code>// AutoGitHubPush
+async function generateCommit() {
+  const repo = await github.getRepo();
+  const code = await ai.generateCode({
+    type: 'feature',
+    complexity: 'medium',
+    language: 'javascript'
+  });
+  
+  const commit = await github.commit({
+    repo: repo.name,
+    code: code,
+    message: 'Add new feature'
+  });
+  
+  return commit.status;
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

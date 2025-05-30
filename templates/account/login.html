@@ -1,0 +1,99 @@
+{% load socialaccount %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - AutoGitPush</title>
+    <meta name="description" content="Login to AutoGitPush to automate your GitHub commits" />
+    <meta name="author" content="AutoGitPush" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+
+  <body>
+    <div id="app" class="d-flex flex-column min-vh-100">
+      <!-- Header -->
+        {% include 'frontend/includes/header.html' %}
+
+      <!-- Main Content -->
+      <main class="flex-grow-1 d-flex align-items-center justify-content-center position-relative">
+        <!-- Enhanced background elements -->
+        <div class="position-absolute top-25 start-25 w-25 h-25 bg-futuristic-glow-purple opacity-10 rounded-circle blur"></div>
+        <div class="position-absolute bottom-25 end-25 w-50 h-50 bg-futuristic-glow-blue opacity-5 rounded-circle blur"></div>
+        <div class="position-absolute top-50 start-50 translate-middle w-75 h-75 bg-gradient-to-r from-futuristic-glow-blue to-futuristic-glow-purple opacity-10 rounded-circle blur-lg"></div>
+        
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 col-xl-5">
+              <div class="futuristic-card p-5 animation-fade-in position-relative overflow-hidden">
+                <!-- Glowing orb -->
+                <div class="position-absolute top-0 end-0 translate-x-25 translate-y-n25 w-50 h-50 bg-gradient-to-r from-futuristic-glow-purple to-futuristic-glow-pink opacity-20 rounded-circle blur-3xl"></div>
+                
+                <div class="text-center mb-5 position-relative">
+                  <div class="position-relative d-inline-block mb-4">
+                    <div class="logo-circle mx-auto" style="width: 5rem; height: 5rem; display: flex; justify-content: center; align-items: center;">
+                      <i class="fa-brands fa-github fa-2xl text-white"></i>
+                    </div>
+                    <div class="position-absolute top-0 start-0 w-100 h-100 rounded-circle bg-futuristic-glow-blue opacity-30 blur-md"></div>
+                  </div>
+                  <h2 class="fs-1 fw-bold glow-text mb-3">Welcome</h2>
+                  <p class="text-light-gray">Connect with GitHub to automate your commits</p>
+                </div>
+                
+                <div class="d-grid gap-4 position-relative">
+                  <a class="btn futuristic-button py-3 d-flex align-items-center justify-content-center gap-2" href="{% provider_login_url 'github' %}" id="github-login-btn">
+                    <i class="fa-brands fa-github"></i>
+                    <span>Continue with GitHub</span>
+                  </a>
+                  
+                  <div class="text-center small mt-3">
+                    <p class="mb-1">By continuing, you agree to our</p>
+                    <p>
+                      <a href="#" class="text-decoration-none" style="color: var(--futuristic-glow-blue);">Terms of Service</a>
+                      &nbsp;&amp;&nbsp;
+                      <a href="#" class="text-decoration-none" style="color: var(--futuristic-glow-blue);">Privacy Policy</a>
+                    </p>
+                  </div>
+                </div>
+                
+                <!-- Bottom border glow -->
+                <div class="position-absolute bottom-0 start-0 w-100 h-1 bg-gradient-to-r from-futuristic-glow-blue-0 via-futuristic-glow-blue to-futuristic-glow-blue-0"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      {% include 'frontend/includes/footer.html' %}
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // GitHub login button click handler
+      document.getElementById('github-login-btn').addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Connecting...';
+        
+        // Simulate API call delay
+        setTimeout(() => {
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1000);
+        }, 1500);
+      });
+    </script>
+  </body>
+</html>

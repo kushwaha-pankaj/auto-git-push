@@ -1,0 +1,79 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+{% block title %}Login - AutoGitPush{% endblock title %}
+{% block description %}Login to AutoGitPush using your GitHub account{% endblock description %}
+{% block author %}AutoGitPush{% endblock author %}
+{% load socialaccount %}
+
+{% block main %}
+<!-- Main Content -->
+<main class="flex-grow-1 d-flex align-items-center justify-content-center position-relative">
+  <!-- Background Elements -->
+  <div class="position-absolute top-25 start-25 w-25 h-25 bg-futuristic-glow-purple opacity-10 rounded-circle blur">
+  </div>
+  <div class="position-absolute bottom-25 end-25 w-50 h-50 bg-futuristic-glow-blue opacity-5 rounded-circle blur"></div>
+  <div
+    class="position-absolute top-50 start-50 translate-middle w-75 h-75 bg-gradient-to-r from-futuristic-glow-blue to-futuristic-glow-purple opacity-10 rounded-circle blur-lg">
+  </div>
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6 col-xl-5">
+        <div class="futuristic-card p-5 animation-fade-in position-relative overflow-hidden" style="margin: 20px;">
+
+          <!-- Glowing Orb -->
+          <div
+            class="position-absolute top-0 end-0 translate-x-25 translate-y-n25 w-50 h-50 bg-gradient-to-r from-futuristic-glow-purple to-futuristic-glow-pink opacity-20 rounded-circle blur-3xl">
+          </div>
+
+          <!-- Logo and Welcome Text -->
+          <div class="text-center mb-5 position-relative">
+            <div class="position-relative d-inline-block mb-4">
+              <div class="logo-circle mx-auto"
+                style="width: 5rem; height: 5rem; display: flex; justify-content: center; align-items: center;">
+                <i class="fa-brands fa-github fa-2xl text-white" aria-label="GitHub Logo"></i>
+              </div>
+              <div
+                class="position-absolute top-0 start-0 w-100 h-100 rounded-circle bg-futuristic-glow-blue opacity-30 blur-md">
+              </div>
+            </div>
+            <h2 class="fs-1 fw-bold glow-text mb-3">Welcome to AutoGitPush</h2>
+            <p class="text-light-gray">Sign in securely with your GitHub account</p>
+          </div>
+
+          <!-- GitHub Login Button -->
+          <div class="d-grid gap-4 position-relative align-items-center justify-content-center">
+            {% csrf_token %}
+            <a href="{% provider_login_url 'github' process='connect' %}"
+              class="btn futuristic-button py-3 d-flex align-items-center justify-content-center gap-2">
+              <i class="fa-brands fa-github"></i>
+              <span>Continue with GitHub</span>
+            </a>
+            <!-- Divider -->
+            <div class="position-relative my-3">
+              <div class="position-absolute top-50 start-0 end-0 border-top border-futuristic-silver opacity-20"></div>
+            </div>
+
+            <!-- Additional Links -->
+            <div class="text-center small mt-3">
+              <p class="mb-1">By continuing, you agree to our</p>
+              <p>
+                <a href="/terms" class="text-decoration-none" style="color: var(--futuristic-glow-blue);">Terms of
+                  Service</a>
+                &nbsp;&amp;&nbsp;
+                <a href="/privacy" class="text-decoration-none" style="color: var(--futuristic-glow-blue);">Privacy
+                  Policy</a>
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom Border Glow -->
+          <div
+            class="position-absolute bottom-0 start-0 w-100 h-1 bg-gradient-to-r from-futuristic-glow-blue-0 via-futuristic-glow-blue to-futuristic-glow-blue-0">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock main %}

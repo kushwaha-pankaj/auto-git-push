@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    {% block title %}{% endblock title %}
+  </title>
+  <meta name="description" content="Automatically generate and push code to your GitHub repositories on a schedule" />
+  <meta name="author" content="AutoGitPush" />
+
+  <meta property="og:title" content="AutoGitPush - Automate Your GitHub Commits" />
+  <meta property="og:description"
+    content="Automatically generate and push code to your GitHub repositories on a schedule" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@autogitpush" />
+  <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Toastify CSS for notifications -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+  {% block style %}
+
+  {% endblock style %}
+</head>
+
+<body>
+  <div id="app" class="d-flex flex-column min-vh-100">
+    <!-- Header -->
+    {% include "frontend/includes/header.html" %}
+
+    <!-- Main Content -->
+
+    {% block main %}
+
+    {% endblock main %}
+
+    <!-- Footer -->
+    {% include "frontend/includes/footer.html" %}
+  </div>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JS -->
+  <script>
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+  </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const grid = document.getElementById('contribution-grid');
+  if (!grid) return;
+
+  const weeks = 53; // columns
+  const days = 7;   // rows
+
+  // Define bitmap pattern for "PANKAJ" (7xN)
+  const pattern = [
+    // P      A      N      K      A      J
+    [1,1,1,0,  0,1,1,1,0,  1,0,0,1, 1,0,1,0, 0,1,1,1, 0,0,1,1],
+    [1,0,0,1, 1,0,0,0,1,  1,1,0,1, 1,1,0,0, 1,0,0,0, 0,0,0,1],
+    [1,1,1,0, 1,1,1,1,1,  1,0,1,1, 1,0,1,0, 1,1,1,1, 0,0,0,1],
+    [1,0,0,0, 1,0,0,0,1,  1,0,0,1, 1,0,0,1, 1,0,0,0, 1,0,0,1],
+    [1,0,0,0, 1,0,0,0,1,  1,0,0,1, 1,0,0,1, 1,0,0,0, 0,1,1,0],
+    [0,0,0,0, 0,0,0,0,0,  0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,0,0,  0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0]
+  ];
+
+  const patternCols = pattern[0].length;
+  const offset = Math.floor((weeks - patternCols) / 2); // center horizontally
+
+  for (let w = 0; w < weeks; w++) {
+    const weekColumn = document.createElement('div');
+    weekColumn.classList.add('contribution-week');
+
+    for (let d = 0; d < days; d++) {
+      const cell = document.createElement('div');
+      cell.classList.add('contribution-day');
+
+      let level = 0;
+
+      // If in pattern range, draw it
+      if (w >= offset && w < offset + patternCols) {
+        const patternVal = pattern[d][w - offset];
+        level = patternVal === 1 ? 3 + Math.floor(Math.random() * 2) : 0;
+      } else {
+        // Random background noise
+        level = Math.random() < 0.1 ? Math.floor(Math.random() * 2) : 0;
+      }
+
+      cell.classList.add(`level-${level}`);
+      weekColumn.appendChild(cell);
+    }
+
+    grid.appendChild(weekColumn);
+  }
+});
+</script>
+  <script src="{% static 'js/main.js' %}"></script>
+  <!-- Toastify JS for notifications -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <!-- Django Messages Toast -->
+  <script>
+    {% if messages %}
+    {% for message in messages %}
+    var bgColor;
+    {% if message.tags == 'success' %}
+    bgColor = "#09680CFF";
+    {% elif message.tags == 'error' %}
+    bgColor = "#f44336";
+    {% elif message.tags == 'warning' %}
+    bgColor = "#FFC107";
+    {% else %}
+    bgColor = "#2196F3";
+    {% endif %}
+
+    Toastify({
+      text: "{{ message|escapejs }}",
+      duration: 3000,
+      gravity: "top",
+      position: "right",
+      backgroundColor: bgColor,
+      close: true,
+      stopOnFocus: true,
+    }).showToast();
+    {% endfor %}
+    {% endif %}
+  </script>
+  <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="kushwahapankaj" data-description="Support me on Buy me a coffee!" data-message="Love this project? Show some ❤️ with a coffee!" data-color="#40DCA5" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+  {% block script %}
+
+  {% endblock script %}
+</body>
+
+</html>

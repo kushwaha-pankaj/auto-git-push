@@ -1,0 +1,612 @@
+{% extends "frontend/base.html" %}
+{% load static %}
+{% block title %}Automatic Push Settings{% endblock %}
+{% block style %}
+
+<style>
+  .settings-card {
+    border: 1px solid #444;
+    border-radius: 12px;
+    padding: 1.2rem;
+    background-color: #1a1a1a;
+    color: #eee;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    user-select: none;
+  }
+
+  .settings-card:hover {
+    background-color: #333;
+  }
+
+  .settings-card.selected {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+  }
+
+  .futuristic-input-container {
+    position: relative;
+  }
+
+  .futuristic-select,
+  .futuristic-input {
+    background-color: #222 !important;
+    color: #eee !important;
+    border: 1px solid #555 !important;
+    border-radius: 8px !important;
+  }
+
+  .range-slider::-webkit-slider-thumb {
+    background-color: #3b82f6;
+  }
+
+  .range-slider::-moz-range-thumb {
+    background-color: #3b82f6;
+  }
+
+  /* Radio button styling */
+  .futuristic-radio-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .futuristic-radio-container input[type="radio"] {
+    display: none;
+  }
+
+  .radio-checkmark {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #3b82f6;
+    margin-right: 0.75rem;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .futuristic-radio-container input[type="radio"]:checked+.radio-checkmark::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #3b82f6;
+  }
+
+  /* Radio button selected state */
+  .futuristic-radio-container.selected .radio-checkmark {
+    background-color: #3b82f6;
+    color: white;
+  }
+
+  /* Error message style */
+  .error-message {
+    color: #ff6b6b;
+    font-size: 0.9rem;
+    margin-top: 0.3rem;
+    display: none;
+  }
+</style>
+{% endblock style %}
+
+{% block main %}
+<main class="flex-grow-1 py-5">
+  <div class="container">
+    <div class="futuristic-card p-4 p-md-5 animation-fade-in">
+      <div class="mb-5">
+        <h1 class="glow-text mb-2">Automatic Push Settings</h1>
+        <p class="text-light-gray">Configure how and when your code is automatically pushed to GitHub</p>
+      </div>
+
+      <div class="alert glassmorphism mb-4" role="alert">
+        <div class="d-flex align-items-center">
+          <i class="fa-solid fa-circle-info text-primary me-3"></i>
+          <div>This feature generates practice programs to help maintain a consistent coding routine.</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <ul class="nav nav-tabs border-0 mb-4" id="settingsTabs" role="tablist">
+        <li class="nav-item me-2" role="presentation">
+          <button class="nav-link active" id="schedule-tab" data-bs-toggle="tab" data-bs-target="#schedule"
+            type="button" role="tab" aria-controls="schedule" aria-selected="true">
+            <i class="fa-regular fa-calendar-check me-2"></i>Schedule
+          </button>
+        </li>
+        <li class="nav-item me-2" role="presentation">
+          <button class="nav-link" id="code-tab" data-bs-toggle="tab" data-bs-target="#code" type="button" role="tab"
+            aria-controls="code" aria-selected="false">
+            <i class="fa-solid fa-code me-2"></i>Code Type
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="preferences-tab" data-bs-toggle="tab" data-bs-target="#preferences" type="button"
+            role="tab" aria-controls="preferences" aria-selected="false">
+            <i class="fa-solid fa-sliders me-2"></i>Preferences
+          </button>
+        </li>
+      </ul>
+
+      <form id="settings-form" novalidate>
+        <div class="tab-content" id="settingsTabsContent">
+
+          <!-- Schedule Tab -->
+          <div class="tab-pane fade show active" id="schedule" role="tabpanel" aria-labelledby="schedule-tab"
+            tabindex="0">
+
+            <!-- Push Frequency -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-regular fa-calendar me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Push Frequency</h3>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <div class="settings-card selected text-center h-100" data-frequency="daily" role="button"
+                    tabindex="0">Daily</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Codes Per Day -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-code me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Codes Per Day</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="futuristic-input-container">
+                    <select id="codes-per-day" class="form-select futuristic-select" required>
+                      <option value="" disabled>Select codes per day</option>
+                      <option value="1">1 code per day</option>
+                      <option value="2">2 codes per day</option>
+                      <option value="3" selected>3 codes per day</option>
+                      <option value="4">4 codes per day</option>
+                      <option value="5">5 codes per day</option>
+                      <option value="6">6 codes per day</option>
+                      <option value="7">7 codes per day (maximum)</option>
+                    </select>
+                    <div class="invalid-feedback">Please select the number of codes per day.</div>
+                  </div>
+                  <p class="small mt-2">Number of code examples to generate each day</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Time of Day -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-regular fa-clock me-2 text-primary text-white"></i>
+                <h3 class="fs-5 fw-semibold m-0">Time of Day</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="futuristic-input-container">
+                    <input id="push-time" type="time" class="form-control futuristic-input" value="09:00" required />
+                    <div class="invalid-feedback">Please select the time of day.</div>
+                  </div>
+                  <p class="small mt-2">The system will automatically push code at this time based on your selected
+                    frequency</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Auto-Push Duration -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-regular fa-calendar-days me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Auto-Push Duration</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="futuristic-input-container">
+                    <select id="auto-push-duration" class="form-select futuristic-select" required>
+                      <option value="" disabled>Select auto-push duration</option>
+                      <option value="3">3 days</option>
+                      <option value="5" selected>5 days</option>
+                      <option value="7">7 days</option>
+                    </select>
+                    <div class="invalid-feedback">Please select the auto-push duration.</div>
+                  </div>
+                  <p class="small mt-2">Automatic code pushes will continue for this period (3 to 7 days max)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Code Type Tab -->
+          <div class="tab-pane fade" id="code" role="tabpanel" aria-labelledby="code-tab" tabindex="0">
+
+            <!-- Code Type -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-code me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Code Type</h3>
+              </div>
+              <div class="row g-3" id="code-type-group">
+                <div class="col-md-6">
+                  <div class="settings-card selected h-100" data-code-type="practice" role="button" tabindex="0">
+                    <h4 class="mb-2">Practice Questions</h4>
+                    <p class="small mb-0">Simple programming problems to practice coding skills</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="settings-card h-100" data-code-type="leetcode" role="button" tabindex="0">
+                    <h4 class="mb-2">LeetCode Style</h4>
+                    <p class="small mb-0">Algorithm and data structure questions similar to LeetCode</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="settings-card h-100" data-code-type="feature" role="button" tabindex="0">
+                    <h4 class="mb-2">Feature Development</h4>
+                    <p class="small mb-0">Small features to enhance your existing codebase</p>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="settings-card h-100" data-code-type="daily-challenges" role="button" tabindex="0">
+                    <h4 class="mb-2">Daily Challenges</h4>
+                    <p class="small mb-0">Unique programming challenges to test your skills</p>
+                  </div>
+                </div>
+              </div>
+              <div id="code-type-error" class="error-message">Please select a code type.</div>
+            </div>
+
+            <!-- Code Complexity -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-bolt me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Code Complexity</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="d-flex align-items-center">
+                    <span class="me-3">Simple</span>
+                    <input id="code-complexity" type="range" class="form-range flex-grow-1 range-slider" min="1"
+                      max="100" value="50" />
+                    <span class="ms-3">Complex</span>
+                  </div>
+                  <p class="small mt-2">Choose between 1 to 100</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Code Style -->
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="futuristic-radio-container settings-card h-100 d-flex align-items-center selected"
+                  tabindex="0">
+                  <input type="radio" name="code-style" value="clean-simple" checked />
+                  Clean &amp; Simple
+                </label>
+              </div>
+              <div class="col-md-4">
+                <label class="futuristic-radio-container settings-card h-100 d-flex align-items-center" tabindex="0">
+                  <input type="radio" name="code-style" value="performance-optimized" />
+                  Performance Optimized
+                </label>
+              </div>
+              <div class="col-md-4">
+                <label class="futuristic-radio-container settings-card h-100 d-flex align-items-center" tabindex="0">
+                  <input type="radio" name="code-style" value="creative-innovative" />
+                  Creative &amp; Innovative
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preferences Tab -->
+          <div class="tab-pane fade" id="preferences" role="tabpanel" aria-labelledby="preferences-tab" tabindex="0">
+
+            <!-- Default Commit Message -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-regular fa-message me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Default Commit Message</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="futuristic-input-container">
+                    <input id="default-commit-msg" type="text" class="form-control futuristic-input"
+                      value="Auto-generated code update" required />
+                    <div class="invalid-feedback">Please enter a default commit message.</div>
+                  </div>
+                  <p class="small mt-2">This message will be used for all auto-generated commits</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preferred Language -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-code me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Preferred Language</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="futuristic-input-container">
+                    <select id="preferred-language" class="form-select futuristic-select" required>
+                      <option value="" disabled>Select preferred language</option>
+                      <option value="javascript">JavaScript</option>
+                      <option value="typescript">TypeScript</option>
+                      <option value="python" selected>Python</option>
+                      <option value="java">Java</option>
+                      <option value="csharp">C#</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a preferred language.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Preferred Framework -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-solid fa-cubes me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Preferred Framework</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="futuristic-input-container">
+                    <select id="preferred-framework" class="form-select futuristic-select" required>
+                      <option value="" disabled>Select preferred framework</option>
+                      <option value="react">React</option>
+                      <option value="vue">Vue</option>
+                      <option value="angular">Angular</option>
+                      <option value="nextjs">Next.js</option>
+                      <option value="express">Express</option>
+                      <option value="django" selected>Django</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a preferred framework.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Comment Style -->
+            <div class="mb-5">
+              <div class="d-flex align-items-center mb-3">
+                <i class="fa-regular fa-comment me-2 text-primary"></i>
+                <h3 class="fs-5 fw-semibold m-0">Comment Style</h3>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="futuristic-input-container">
+                    <select id="comment-style" class="form-select futuristic-select" required>
+                      <option value="" disabled>Select comment style</option>
+                      <option value="minimal">Minimal</option>
+                      <option value="standard" selected>Standard</option>
+                      <option value="detailed">Detailed</option>
+                    </select>
+                    <div class="invalid-feedback">Please select a comment style.</div>
+                  </div>
+                  <p class="small mt-2">Controls the level of documentation in generated code</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end mt-5 pt-4 border-top border-secondary border-opacity-25">
+          <a href="{% url 'dashboard' %}" class="btn futuristic-button-secondary me-3" tabindex="0">Cancel</a>
+          <button id="save-settings" type="submit" class="btn futuristic-button">Save Settings</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</main>
+{% endblock main %}
+
+{% block script %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Initialize Bootstrap tooltips
+  const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  const tooltipList = [...tooltipTriggerList].map(t => new bootstrap.Tooltip(t));
+
+  // Handle card selection groups with proper color update
+  function setupSelectionGroup(groupSelector, selectedClass = 'selected') {
+    const group = document.querySelectorAll(groupSelector);
+    group.forEach(card => {
+      card.addEventListener('click', () => {
+        // Remove 'selected' from all cards in the group
+        group.forEach(sib => sib.classList.remove(selectedClass, 'bg-blue-600', 'text-white'));
+        // Add 'selected' and color classes to clicked card
+        card.classList.add(selectedClass, 'bg-blue-600', 'text-white');
+      });
+
+      // Keyboard accessibility: toggle selection on Enter or Space
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+  }
+
+  // Initialize the selection groups
+  setupSelectionGroup('.settings-card[data-code-type]');
+  setupSelectionGroup('.futuristic-radio-container.settings-card');
+
+
+  // Form submit handling with validation
+  document.getElementById('settings-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const saveBtn = document.getElementById('save-settings');
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Saving...';
+
+    // Collect data with validation
+    const frequencyCard = document.querySelector('.settings-card.selected[data-frequency]');
+    const frequency = frequencyCard ? frequencyCard.getAttribute('data-frequency') : null;
+
+    const codesPerDay = document.getElementById('codes-per-day').value;
+    const pushTime = document.getElementById('push-time').value;
+    const autoPushDuration = document.getElementById('auto-push-duration').value;
+
+    const codeTypeCard = document.querySelector('#code-type-group .settings-card.selected');
+    const codeType = codeTypeCard ? codeTypeCard.getAttribute('data-code-type') : null;
+
+    const codeComplexity = document.getElementById('code-complexity').value;
+
+    const codeStyleRadio = document.querySelector('input[name="code-style"]:checked');
+    const codeStyle = codeStyleRadio ? codeStyleRadio.value : null;
+
+    const defaultCommitMsg = document.getElementById('default-commit-msg').value.trim();
+    const preferredLanguage = document.getElementById('preferred-language').value;
+    const preferredFramework = document.getElementById('preferred-framework').value;
+    const commentStyle = document.getElementById('comment-style').value;
+
+    // Clear previous validation UI
+    document.querySelectorAll('.invalid-feedback').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    document.getElementById('code-type-error').style.display = 'none';
+
+    // Validation flags
+    let isValid = true;
+
+    if (!frequency) {
+      isValid = false;
+      // No error shown since frequency is fixed daily and selected by default
+    }
+    if (!codesPerDay) {
+      isValid = false;
+      document.getElementById('codes-per-day').classList.add('is-invalid');
+      document.querySelector('#codes-per-day + .invalid-feedback').style.display = 'block';
+    }
+    if (!pushTime) {
+      isValid = false;
+      document.getElementById('push-time').classList.add('is-invalid');
+      document.querySelector('#push-time + .invalid-feedback').style.display = 'block';
+    }
+    if (!autoPushDuration) {
+      isValid = false;
+      document.getElementById('auto-push-duration').classList.add('is-invalid');
+      document.querySelector('#auto-push-duration + .invalid-feedback').style.display = 'block';
+    }
+    if (!codeType) {
+      isValid = false;
+      document.getElementById('code-type-error').style.display = 'block';
+    }
+    if (!codeStyle) {
+      isValid = false;
+      // Radio inputs show native validation, but we add class for visual
+      document.querySelectorAll('input[name="code-style"]').forEach(r => r.closest('label').classList.add('is-invalid'));
+    }
+    if (!defaultCommitMsg) {
+      isValid = false;
+      document.getElementById('default-commit-msg').classList.add('is-invalid');
+      document.querySelector('#default-commit-msg + .invalid-feedback').style.display = 'block';
+    }
+    if (!preferredLanguage) {
+      isValid = false;
+      document.getElementById('preferred-language').classList.add('is-invalid');
+      document.querySelector('#preferred-language + .invalid-feedback').style.display = 'block';
+    }
+    if (!preferredFramework) {
+      isValid = false;
+      document.getElementById('preferred-framework').classList.add('is-invalid');
+      document.querySelector('#preferred-framework + .invalid-feedback').style.display = 'block';
+    }
+    if (!commentStyle) {
+      isValid = false;
+      document.getElementById('comment-style').classList.add('is-invalid');
+      document.querySelector('#comment-style + .invalid-feedback').style.display = 'block';
+    }
+
+    if (!isValid) {
+      saveBtn.disabled = false;
+      saveBtn.innerHTML = 'Save Settings';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Prepare data object for backend
+    const payload = {
+      frequency,
+      codes_per_day: codesPerDay,
+      push_time: pushTime,
+      auto_push_duration: autoPushDuration,
+      code_type: codeType,
+      code_complexity: codeComplexity,
+      code_style: codeStyle,
+      default_commit_msg: defaultCommitMsg,
+      preferred_language: preferredLanguage,
+      preferred_framework: preferredFramework,
+      comment_style: commentStyle,
+    };
+
+    fetch("{% url 'save_auto_settings' %}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(res => res.json())
+      .then(data => {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = "Save Settings";
+        if (data.success) {
+          showToast("Settings saved successfully!", true);
+          window.location.href = data.redirect_url || "/dashboard/";
+        } else {
+          showToast(`Failed to save settings: ${data.error || "Unknown error"}`, false);
+        }
+      })
+      .catch(err => {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = "Save Settings";
+        showToast(`Error saving settings: ${err}`, false);
+      });
+  });
+
+  // Toast show function
+  function showToast(message, isSuccess = true) {
+    const toastEl = document.getElementById("settings-toast");
+    const toastText = document.getElementById("toast-text");
+    toastText.textContent = message;
+    toastEl.className = `toast align-items-center text-white border-0 ${isSuccess ? "bg-success" : "bg-danger"}`;
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+  }
+
+  // CSRF helper
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let cookie of cookies) {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + "=")) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+</script>
+
+<!-- Toast container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050" aria-live="assertive" aria-atomic="true">
+  <div id="settings-toast" class="toast align-items-center text-white border-0 bg-success" role="alert">
+    <div class="d-flex">
+      <div id="toast-text" class="toast-body"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+        aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+{% endblock script %}

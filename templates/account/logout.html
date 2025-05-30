@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout - AutoGitPush</title>
+    <meta name="description" content="Logout from AutoGitPush to end your session">
+    <meta name="author" content="AutoGitPush">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div id="app" class="d-flex flex-column min-vh-100">
+        <!-- Header -->
+        {% include 'frontend/includes/header.html' %}
+
+        <!-- Main Content -->
+        <main class="flex-grow-1 d-flex align-items-center justify-content-center position-relative">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6 col-xl-5">
+                        <div class="futuristic-card p-5 animation-fade-in position-relative overflow-hidden m-2">
+                            <div class="text-center mb-5 position-relative">
+                                <div class="position-relative d-inline-block mb-4">
+                                    <div class="logo-circle mx-auto"
+                                        style="width: 5rem; height: 5rem; display: flex; justify-content: center; align-items: center;">
+                                        <i class="fa-brands fa-github fa-2xl text-white"></i>
+                                    </div>
+                                    <div
+                                        class="position-absolute top-0 start-0 w-100 h-100 rounded-circle bg-futuristic-glow-blue opacity-30 blur-md">
+                                    </div>
+                                </div>
+                                <h2 class="fs-1 fw-bold glow-text mb-3">See you next time!</h2>
+                                <p class="text-light-gray"> Are you sure want to logout? </p>
+                            </div>
+
+                            <div class="d-flex gap-4 justify-content-center position-relative">
+                                <form method="post" action="{% url 'account_logout' %}">
+                                    {% csrf_token %}
+                                    <button type="submit"
+                                        class="btn btn-danger py-3 d-flex align-items-center justify-content-center gap-2">
+                                        <i class="fa-solid fa-right-from-bracket"></i>
+                                        <span>Logout</span>
+                                    </button>
+                                </form>
+                                <a class="btn futuristic-button py-3 d-flex align-items-center justify-content-center gap-2"
+                                    href="{% url 'dashboard' %}">
+                                    <i class="fa-solid fa-table-columns"></i>
+                                    <span>Back to Dashboard</span>
+                                </a>
+                            </div>
+                            <div class="text-center small mt-3">
+                                    <p class="mb-1">Thank you for using AutoGitPush!</p>
+                            </div>
+                            <!-- Bottom border glow -->
+                            <div
+                                class="position-absolute bottom-0 start-0 w-100 h-1 bg-gradient-to-r from-futuristic-glow-blue-0 via-futuristic-glow-blue to-futuristic-glow-blue-0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        {% include 'frontend/includes/footer.html' %}
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+</div>

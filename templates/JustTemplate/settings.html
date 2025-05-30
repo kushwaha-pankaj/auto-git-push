@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - AutoGitPush</title>
+    <meta name="description" content="Configure your automatic GitHub push settings" />
+    <meta name="author" content="AutoGitPush" />
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  </head>
+
+  <body>
+    <div id="app" class="d-flex flex-column min-vh-100">
+      <!-- Header -->
+      <header class="sticky-top header-glass">
+        <div class="container">
+          <nav class="navbar py-3">
+            <div class="d-flex align-items-center">
+              <div class="logo-circle me-2"></div>
+              <a class="navbar-brand fw-semibold" href="index.html">AutoGitHubPush</a>
+            </div>
+            
+            <ul class="navbar-nav flex-row ms-auto">
+              <li class="nav-item me-4">
+                <a class="nav-link d-flex align-items-center" href="dashboard.html">
+                  <i class="fa-solid fa-table-columns me-2"></i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center active" href="settings.html">
+                  <i class="fa-solid fa-gear me-2"></i>
+                  <span>Settings</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-grow-1 py-5">
+        <div class="container">
+          <div class="futuristic-card p-4 p-md-5 animation-fade-in">
+            <div class="mb-5">
+              <h1 class="glow-text mb-2">Automatic Push Settings</h1>
+              <p class="text-light-gray">Configure how and when your code is automatically pushed to GitHub</p>
+            </div>
+            
+            <div class="alert glassmorphism mb-4" role="alert">
+              <div class="d-flex">
+                <div class="me-3">
+                  <i class="fa-solid fa-circle-info text-primary"></i>
+                </div>
+                <div>
+                  This feature is designed to generate small practice programs to help you maintain a consistent coding routine.
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs border-0 mb-4" id="settingsTabs">
+              <li class="nav-item me-2">
+                <a class="nav-link settings-tab active" id="schedule-tab" data-bs-toggle="tab" href="#schedule">
+                  <i class="fa-regular fa-calendar-check me-2"></i>Schedule
+                </a>
+              </li>
+              <li class="nav-item me-2">
+                <a class="nav-link settings-tab" id="code-tab" data-bs-toggle="tab" href="#code">
+                  <i class="fa-solid fa-code me-2"></i>Code Type
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link settings-tab" id="preferences-tab" data-bs-toggle="tab" href="#preferences">
+                  <i class="fa-solid fa-sliders me-2"></i>Preferences
+                </a>
+              </li>
+            </ul>
+            
+            <!-- Tab Content -->
+            <div class="tab-content" id="settingsTabsContent">
+              <!-- Schedule Tab -->
+              <div class="tab-pane fade show active" id="schedule">
+                <!-- Frequency -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-regular fa-calendar me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Push Frequency</h3>
+                  </div>
+                  
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <div class="settings-card selected text-center h-100">
+                        <h4 class="mb-0">Daily</h4>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="settings-card text-center h-100">
+                        <h4 class="mb-0">Weekly</h4>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="settings-card text-center h-100">
+                        <h4 class="mb-0">Monthly</h4>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Codes Per Day -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-code me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Codes Per Day</h3>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="futuristic-input-container">
+                        <select class="form-select futuristic-select">
+                          <option value="1">1 code per day</option>
+                          <option value="2">2 codes per day</option>
+                          <option value="3" selected>3 codes per day</option>
+                          <option value="4">4 codes per day</option>
+                          <option value="5">5 codes per day</option>
+                          <option value="6">6 codes per day</option>
+                          <option value="7">7 codes per day (maximum)</option>
+                        </select>
+                      </div>
+                      <p class="text-muted small mt-2">Number of code examples to generate each day</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Time of Day -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-regular fa-clock me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Time of Day</h3>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="futuristic-input-container">
+                        <input type="time" class="form-control futuristic-input" value="09:00">
+                      </div>
+                      <p class="text-muted small mt-2">The system will automatically push code at this time based on your selected frequency</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Auto-Push Duration -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-regular fa-calendar-days me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Auto-Push Duration</h3>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="futuristic-input-container">
+                        <select class="form-select futuristic-select">
+                          <option value="7">7 days</option>
+                          <option value="14">14 days</option>
+                          <option value="30" selected>30 days</option>
+                          <option value="90">90 days</option>
+                          <option value="365">1 year</option>
+                        </select>
+                      </div>
+                      <p class="text-muted small mt-2">Automatic code pushes will continue for this period</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Code Type Tab -->
+              <div class="tab-pane fade" id="code">
+                <!-- Code Type -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-code me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Code Type</h3>
+                  </div>
+                  
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <div class="settings-card selected h-100">
+                        <h4 class="mb-2">Practice Questions</h4>
+                        <p class="text-muted small mb-0">Simple programming problems to practice coding skills</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="settings-card h-100">
+                        <h4 class="mb-2">LeetCode Style</h4>
+                        <p class="text-muted small mb-0">Algorithm and data structure questions similar to LeetCode</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="settings-card h-100">
+                        <h4 class="mb-2">Feature Development</h4>
+                        <p class="text-muted small mb-0">Small features to enhance your existing codebase</p>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="settings-card h-100">
+                        <h4 class="mb-2">Daily Challenges</h4>
+                        <p class="text-muted small mb-0">Unique programming challenges to test your skills</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Code Complexity -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-bolt me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Code Complexity</h3>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="d-flex align-items-center">
+                        <span class="me-3 text-muted">Simple</span>
+                        <input type="range" class="form-range flex-grow-1 range-slider" min="1" max="100" value="50">
+                        <span class="ms-3 text-muted">Complex</span>
+                      </div>
+                      <p class="text-muted small mt-2">Moderate code complexity - suitable for intermediate programmers.</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Code Style -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-regular fa-file-code me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Code Style</h3>
+                  </div>
+                  
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label class="futuristic-radio-container settings-card h-100 d-flex align-items-center">
+                        <input type="radio" name="code-style" checked>
+                        <span class="radio-checkmark"></span>
+                        Clean & Simple
+                      </label>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="futuristic-radio-container settings-card h-100 d-flex align-items-center">
+                        <input type="radio" name="code-style">
+                        <span class="radio-checkmark"></span>
+                        Performance Optimized
+                      </label>
+                    </div>
+                    <div class="col-md-4">
+                      <label class="futuristic-radio-container settings-card h-100 d-flex align-items-center">
+                        <input type="radio" name="code-style">
+                        <span class="radio-checkmark"></span>
+                        Creative & Innovative
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Preferences Tab -->
+              <div class="tab-pane fade" id="preferences">
+                <!-- Commit Messages -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-regular fa-message me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Default Commit Message</h3>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-8">
+                      <div class="futuristic-input-container">
+                        <input type="text" class="form-control futuristic-input" value="Auto-generated code update">
+                      </div>
+                      <p class="text-muted small mt-2">This message will be used for all auto-generated commits</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Programming Language -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-code me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Preferred Language</h3>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="futuristic-input-container">
+                        <select class="form-select futuristic-select">
+                          <option value="javascript">JavaScript</option>
+                          <option value="typescript" selected>TypeScript</option>
+                          <option value="python">Python</option>
+                          <option value="java">Java</option>
+                          <option value="csharp">C#</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Framework -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-cubes me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Preferred Framework</h3>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="futuristic-input-container">
+                        <select class="form-select futuristic-select">
+                          <option value="react" selected>React</option>
+                          <option value="vue">Vue</option>
+                          <option value="angular">Angular</option>
+                          <option value="nextjs">Next.js</option>
+                          <option value="express">Express</option>
+                          <option value="django">Django</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Comment Style -->
+                <div class="mb-5">
+                  <div class="d-flex align-items-center mb-3">
+                    <i class="fa-regular fa-comment me-2 text-primary"></i>
+                    <h3 class="fs-5 fw-semibold m-0">Comment Style</h3>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="futuristic-input-container">
+                        <select class="form-select futuristic-select">
+                          <option value="minimal">Minimal</option>
+                          <option value="standard">Standard</option>
+                          <option value="detailed" selected>Detailed</option>
+                        </select>
+                      </div>
+                      <p class="text-muted small mt-2">Controls the level of documentation in generated code</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-end mt-5 pt-4 border-top border-secondary border-opacity-25">
+              <a href="dashboard.html" class="btn futuristic-button-secondary me-3">
+                Cancel
+              </a>
+              <button id="save-settings" class="btn futuristic-button">
+                Save Settings
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer-glass py-4 mt-auto">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <div class="d-flex align-items-center">
+                <div class="logo-circle me-2"></div>
+                <span class="small">AutoGitHubPush © <span id="current-year"></span></span>
+              </div>
+            </div>
+            <div class="col-md-6 text-md-end">
+              <div class="text-muted small">
+                Automatically generate and push code to your GitHub repositories
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+      <div id="settings-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+          <strong class="me-auto">Success</strong>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body bg-dark text-light">
+          Your settings have been saved successfully
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Set current year in footer
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      
+      // Make settings cards act like radio buttons
+      document.querySelectorAll('.settings-card').forEach(card => {
+        card.addEventListener('click', function() {
+          // Find all siblings and remove 'selected' class
+          const parent = this.closest('.row');
+          parent.querySelectorAll('.settings-card').forEach(sibling => {
+            sibling.classList.remove('selected');
+          });
+          
+          // Add 'selected' class to clicked card
+          this.classList.add('selected');
+        });
+      });
+      
+      // Handle settings save
+      document.getElementById('save-settings').addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Saving...';
+        
+        // Simulate API call delay
+        setTimeout(() => {
+          this.disabled = false;
+          this.textContent = 'Save Settings';
+          
+          // Show toast notification
+          const toast = new bootstrap.Toast(document.getElementById('settings-toast'));
+          toast.show();
+          
+          // Simulate redirect after saving
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 1500);
+        }, 1500);
+      });
+      
+      // Initialize all tooltips
+      const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    </script>
+  </body>
+</html>

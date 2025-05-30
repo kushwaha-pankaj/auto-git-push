@@ -1,0 +1,40 @@
+<header class="sticky-top header-glass">
+        <div class="container">
+          <nav class="navbar py-3">
+            <div class="d-flex align-items-center">
+              <div class="logo-circle me-2"></div>
+              <a class="navbar-brand nav-link fw-semibold" href="/" >AutoGitHubPush</a>
+            </div>
+            
+            <ul class="navbar-nav flex-row ms-auto">
+              {% if user.is_authenticated %}
+              <li class="nav-item me-4">
+                <a class="nav-link d-flex align-items-center" href="{% url 'dashboard' %}">
+                  <i class="fa-solid fa-table-columns me-2"></i>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li class="nav-item me-4">
+                <a class="nav-link d-flex align-items-center" href="{% url 'auto_settings' %}">
+                  <i class="fa-solid fa-gear me-2"></i>
+                  <span>Auto Push Settings</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link d-flex align-items-center" href="{% url 'account_logout' %}">
+                  <i class="fa-solid fa-right-from-bracket me-2"></i>
+                  <span>Logout</span>
+                </a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="btn futuristic-button d-flex align-items-center" href="{% url 'account_login' %}">
+                  <i class="fa-solid fa-gear me-2"></i>
+                  <span>Account</span>
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </header>
