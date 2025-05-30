@@ -46,9 +46,9 @@ Keeping your GitHub profile active can be challenging. This project was created 
 
 ## 🔧 Installation Guide
 
+```bash
 ### 1. Clone the Repo
 
-```bash
 git clone https://github.com/kushwaha-pankaj/auto-git-push.git
 cd auto-git-push
 
@@ -105,8 +105,6 @@ Celery Beat:
 🌐 Live Demo
 👉 https://autogithubpush.kushwahapankaj.com
 
-📸 Screenshots
-
 
 💡 Future Features
 GitHub Actions alternative to cron
@@ -121,6 +119,7 @@ Dark mode + more UI customization
 
 ☕ Support the Project
 If you find this useful, consider buying me a coffee to support further development.
+https://buymeacoffee.com/kushwahapankaj
 
 👨‍💻 Author
 Pankaj Kushwaha
