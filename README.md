@@ -116,17 +116,19 @@ Celery Beat:
 
 🌙 Dark mode + enhanced UI customization
 
+---
+
 ☕ Support the Project
 If you find this useful, consider buying me a coffee to support further development. Your support helps keep this project alive!
+https://buymeacoffee.com/kushwahapankaj
 
-👨‍💻 Author
-Pankaj Kushwaha
-🔗 LinkedIn
-🌐 Portfolio
+---
 
 🧾 License
 This project is licensed under the MIT License.
 Feel free to use, modify, and contribute.
+
+---
 
 🤝 Contributing
 Fork the repository
@@ -144,5 +146,7 @@ git push origin feature/your-feature
 Create a Pull Request
 
 ```
+
+---
 
 Built with ❤️ and GPT-4o to automate what matters.
