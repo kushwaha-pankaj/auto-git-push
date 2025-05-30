@@ -105,26 +105,24 @@ Celery Beat:
 🌐 Live Demo
 👉 https://autogithubpush.kushwahapankaj.com
 
-
 💡 Future Features
-GitHub Actions alternative to cron
+🔁 GitHub Actions alternative to cron
 
-Custom user-defined prompts
+🧠 Custom user-defined prompts
 
-Email summaries / push reports
+📧 Email summaries and push reports
 
-Bitbucket & GitLab support
+🛠️ Bitbucket & GitLab support
 
-Dark mode + more UI customization
+🌙 Dark mode + enhanced UI customization
 
 ☕ Support the Project
-If you find this useful, consider buying me a coffee to support further development.
-https://buymeacoffee.com/kushwahapankaj
+If you find this useful, consider buying me a coffee to support further development. Your support helps keep this project alive!
 
 👨‍💻 Author
 Pankaj Kushwaha
-💼 LinkedIn - https://www.linkedin.com/in/kushwahapankaj/
-🌐 Portfolio - https://kushwahapankaj.com/
+🔗 LinkedIn
+🌐 Portfolio
 
 🧾 License
 This project is licensed under the MIT License.
@@ -133,15 +131,18 @@ Feel free to use, modify, and contribute.
 🤝 Contributing
 Fork the repository
 
-Create a new branch (git checkout -b feature/your-feature)
+```bash
+Create a new branch
 
-Commit your changes (git commit -am 'Add new feature')
+git checkout -b feature/your-feature
+Commit your changes
 
-Push to the branch (git push origin feature/your-feature)
+git commit -am 'Add new feature'
+Push to the branch
 
-Create a new Pull Request
+git push origin feature/your-feature
+Create a Pull Request
 
+```
 
 Built with ❤️ and GPT-4o to automate what matters.
-
-Let me know if you'd like it in downloadable form, saved to your project directory, or paired with a `LICENSE.md` or `CONTRIBUTING.md`.
