@@ -100,7 +100,7 @@ Celery Worker:
 
 Celery Beat:
 * * * * * source /home/youruser/virtualenv/yourdomain.com/3.8/bin/activate && cd /home/youruser/yourdomain.com && celery -A autogitpush beat --loglevel=info >> /home/youruser/logs/celery_beat.log 2>&1
-
+```
 
 🌐 Live Demo
 👉 https://autogithubpush.kushwahapankaj.com
